@@ -39,3 +39,19 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running smoothly on port ${PORT}`);
 });
+// A secret route to view your logs directly in your browser without using the Shell tab
+app.get('/view-my-logs-secret-xyz', (req, res) => {
+    const filePath = path.join(__dirname, 'log.txt');
+    
+    // Check if the log file exists yet
+    if (!fs.existsSync(filePath)) {
+        return res.send('No logs recorded yet. Try submitting the form first!');
+    }
+    
+    // Read the file content and display it as clean text in the browser
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) return res.status(500).send('Error reading logs');
+        res.setHeader('Content-Type', 'text/plain');
+        res.send(data);
+    });
+});
